@@ -28,6 +28,16 @@ local function build_tooltip(self)
 
     -- TODO look up the global const for Tyranical and Fort so we can grab short strings
     self:AddLine("Dungeon", "T", "F", "Score")
+    local first_affix = C_MythicPlus.GetCurrentAffixes()[1]
+    local id = first_affix["id"]
+    local name = C_ChallengeMode.GetAffixInfo(id)
+    print(name)
+
+    if id == 10 then -- 10 is Fortified
+        self:SetCellColor(self:GetLineCount(), 3, 0, 1, 0, 0.5)
+    else
+        self:SetCellColor(self:GetLineCount(), 2, 0, 1, 0, 0.5)
+    end
     self:AddSeparator()
 
     for _index, map_info in pairs(C_ChallengeMode.GetMapScoreInfo()) do
@@ -71,7 +81,7 @@ local function anchor_OnEnter(self)
         self.tooltip = nil
     end
 
-    local tooltip = LibQTip:Acquire(ADDON, 4)
+    local tooltip = LibQTip:Acquire(ADDON, 4, "LEFT", "CENTER", "CENTER", "RIGHT")
     self.tooltip = tooltip
     tooltip.OnRelease = OnRelease
     tooltip.OnLeave = OnLeave

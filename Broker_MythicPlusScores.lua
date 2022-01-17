@@ -31,7 +31,6 @@ local function build_tooltip(self)
     local first_affix = C_MythicPlus.GetCurrentAffixes()[1]
     local id = first_affix["id"]
     local name = C_ChallengeMode.GetAffixInfo(id)
-    print(name)
 
     if id == 10 then -- 10 is Fortified
         self:SetCellColor(self:GetLineCount(), 3, 0, 1, 0, 0.5)

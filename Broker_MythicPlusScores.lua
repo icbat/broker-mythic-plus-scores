@@ -17,6 +17,32 @@ local function set_color(self, row, col, color_obj)
     self:SetCellTextColor(row, col, color_obj.r, color_obj.g, color_obj.b, 1)
 end
 
+--- goal is to get [{Name, Tyranical Key, Fortified Key, Best Score}]
+--- and then sort it before going out
+local function build_run_table()
+    local output = {}
+    for index, map_info in pairs(C_ChallengeMode.GetMapScoreInfo()) do
+        local map_id = map_info["mapChallengeModeID"]
+        local map_name, second_id, time_limit, texture = C_ChallengeMode.GetMapUIInfo(map_id)
+
+        local dungeon_affix_info, best_overall_score = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(map_id)
+
+        local tyranical_best = safe_access(0, dungeon_affix_info, 1, "level")
+        local fortified_best = safe_access(0, dungeon_affix_info, 2, "level")
+
+        output[index] = {
+            map_name = map_name,
+            tyranical_best = tyranical_best,
+            fortified_best = fortified_best,
+            best_overall_score = best_overall_score
+        }
+    end
+    table.sort(output, function(obj1, obj2)
+        return obj1["best_overall_score"] > obj2["best_overall_score"]
+    end)
+    return output
+end
+
 local function build_tooltip(self)
     -- TODO sort this table reliably, either dungeon name or score
     local total_score = C_ChallengeMode.GetOverallDungeonScore()
@@ -39,14 +65,11 @@ local function build_tooltip(self)
     end
     self:AddSeparator()
 
-    for _index, map_info in pairs(C_ChallengeMode.GetMapScoreInfo()) do
-        local map_id = map_info["mapChallengeModeID"]
-        local map_name, second_id, time_limit, texture = C_ChallengeMode.GetMapUIInfo(map_id)
-
-        local dungeon_affix_info, best_overall_score = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(map_id)
-
-        local tyranical_best = safe_access(0, dungeon_affix_info, 1, "level")
-        local fortified_best = safe_access(0, dungeon_affix_info, 2, "level")
+    for _index, map_info in ipairs(build_run_table()) do
+        local map_name = map_info["map_name"]
+        local tyranical_best = map_info["tyranical_best"]
+        local fortified_best = map_info["fortified_best"]
+        local best_overall_score = map_info["best_overall_score"]
 
         self:AddLine(map_name, tyranical_best, fortified_best, best_overall_score)
 

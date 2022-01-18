@@ -2,12 +2,12 @@
 ## Title: Broker: Mythic Plus Scores
 ## Notes: Show your character's M+ ratings in one spot
 ## Author: @icbat
-## Version: 7
+## Version: 8
 
 ## Dependencies
 libs/LibStub.lua
 libs/CallbackHandler-1.0.lua
-libs/Li7DataBroker-1.1.lua
+libs/LibDataBroker-1.1.lua
 libs/LibQTip-1.0.lua
 
 ## This addon

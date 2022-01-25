@@ -2,6 +2,10 @@
 --- View Code
 -------------
 local function safe_access(default_value, nested_table, a, b)
+    if nested_table == nil then
+        return default_value
+    end
+
     if nested_table[a] == nil then
         return default_value
     end
@@ -26,6 +30,9 @@ local function build_run_table()
         local map_name, second_id, time_limit, texture = C_ChallengeMode.GetMapUIInfo(map_id)
 
         local dungeon_affix_info, best_overall_score = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(map_id)
+        if best_overall_score == nil then
+            best_overall_score = 0
+        end
 
         local tyranical_best = safe_access(0, dungeon_affix_info, 1, "level")
         local fortified_best = safe_access(0, dungeon_affix_info, 2, "level")

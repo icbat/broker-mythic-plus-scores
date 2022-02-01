@@ -5,23 +5,29 @@ local function set_color(self, row, col, color_obj)
     self:SetCellTextColor(row, col, color_obj.r, color_obj.g, color_obj.b, 1)
 end
 
---- goal is to get [{Name, Tyranical Key, Fortified Key, Best Score}]
---- and then sort it before going out
-local function build_run_table()
-    local output = {}
-    for index, map_info in pairs(C_ChallengeMode.GetMapScoreInfo()) do
-        local map_id = map_info["mapChallengeModeID"]
-        local map_name, second_id, time_limit, texture = C_ChallengeMode.GetMapUIInfo(map_id)
+local function build_one_map_entry(map_info)
+    local map_id = map_info["mapChallengeModeID"]
+    local map_name, second_id, time_limit, texture = C_ChallengeMode.GetMapUIInfo(map_id)
 
-        local dungeon_affix_info, best_overall_score = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(map_id)
-        if best_overall_score == nil then
-            best_overall_score = 0
-        end
+    local dungeon_affix_info, best_overall_score = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(map_id)
+    if best_overall_score == nil then
+        best_overall_score = 0
+    end
 
-        local tyranical_best = 0
-        local fortified_best = 0
+    local tyranical_best = 0
+    local fortified_best = 0
 
-        for i, affix_info in ipairs(dungeon_affix_info) do
+    if dungeon_affix_info == nil then
+        return {
+            map_name = map_name,
+            tyranical_best = tyranical_best,
+            fortified_best = fortified_best,
+            best_overall_score = best_overall_score
+        }
+    end
+
+    for i, affix_info in ipairs(dungeon_affix_info) do
+        if affix_info["level"] ~= nil then
             if affix_info["name"] == "Tyrannical" then
                 tyranical_best = affix_info["level"]
             elseif affix_info["name"] == "Fortified" then
@@ -31,17 +37,30 @@ local function build_run_table()
                     "https://github.com/icbat/broker-mythic-plus-scores/issues")
             end
         end
-
-        output[index] = {
-            map_name = map_name,
-            tyranical_best = tyranical_best,
-            fortified_best = fortified_best,
-            best_overall_score = best_overall_score
-        }
     end
+
+    return {
+        map_name = map_name,
+        tyranical_best = tyranical_best,
+        fortified_best = fortified_best,
+        best_overall_score = best_overall_score
+    }
+
+end
+
+--- goal is to get [{Name, Tyranical Key, Fortified Key, Best Score}]
+--- and then sort it before going out
+local function build_run_table()
+    local output = {}
+
+    for index, map_info in pairs(C_ChallengeMode.GetMapScoreInfo()) do
+        output[index] = build_one_map_entry(map_info)
+    end
+
     table.sort(output, function(obj1, obj2)
         return obj1["best_overall_score"] > obj2["best_overall_score"]
     end)
+
     return output
 end
 

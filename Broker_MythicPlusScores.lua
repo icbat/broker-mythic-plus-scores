@@ -1,22 +1,6 @@
 -------------
 --- View Code
 -------------
-local function safe_access(default_value, nested_table, a, b)
-    if nested_table == nil then
-        return default_value
-    end
-
-    if nested_table[a] == nil then
-        return default_value
-    end
-
-    if nested_table[a][b] == nil then
-        return default_value
-    end
-
-    return nested_table[a][b]
-end
-
 local function set_color(self, row, col, color_obj)
     self:SetCellTextColor(row, col, color_obj.r, color_obj.g, color_obj.b, 1)
 end
@@ -34,8 +18,19 @@ local function build_run_table()
             best_overall_score = 0
         end
 
-        local tyranical_best = safe_access(0, dungeon_affix_info, 1, "level")
-        local fortified_best = safe_access(0, dungeon_affix_info, 2, "level")
+        local tyranical_best = 0
+        local fortified_best = 0
+
+        for i, affix_info in ipairs(dungeon_affix_info) do
+            if affix_info["name"] == "Tyrannical" then
+                tyranical_best = affix_info["level"]
+            elseif affix_info["name"] == "Fortified" then
+                fortified_best = affix_info["level"]
+            else
+                print("Not sure what to do with ", affix_info["name"], ". Please submit a bug report to",
+                    "https://github.com/icbat/broker-mythic-plus-scores/issues")
+            end
+        end
 
         output[index] = {
             map_name = map_name,
@@ -51,7 +46,6 @@ local function build_run_table()
 end
 
 local function build_tooltip(self)
-    -- TODO sort this table reliably, either dungeon name or score
     local total_score = C_ChallengeMode.GetOverallDungeonScore()
 
     self:AddHeader(total_score)

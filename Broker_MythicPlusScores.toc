@@ -2,7 +2,7 @@
 ## Title: Broker: Mythic Plus Scores
 ## Notes: Show your character's M+ ratings in one spot
 ## Author: @icbat
-## Version: 10
+## Version: 11
 
 ## Dependencies
 libs/LibStub.lua

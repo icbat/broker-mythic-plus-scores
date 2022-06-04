@@ -119,6 +119,7 @@ local function OnRelease(self)
 end
 
 local function anchor_OnEnter(self)
+    C_MythicPlus.RequestCurrentAffixes()
     if self.tooltip then
         LibQTip:Release(self.tooltip)
         self.tooltip = nil

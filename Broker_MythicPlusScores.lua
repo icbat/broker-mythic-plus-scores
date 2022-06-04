@@ -74,7 +74,8 @@ local function build_tooltip(self)
 
     -- TODO look up the global const for Tyranical and Fort so we can grab short strings
     self:AddLine("Dungeon", "T", "F", "Score")
-    local first_affix = C_MythicPlus.GetCurrentAffixes()[1]
+    local affixes = C_MythicPlus.GetCurrentAffixes()
+    local first_affix = affixes[1]
     local id = first_affix["id"]
     local name = C_ChallengeMode.GetAffixInfo(id)
 

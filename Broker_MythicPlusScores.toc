@@ -1,8 +1,8 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: Broker: Mythic Plus Scores
 ## Notes: Show your character's M+ ratings in one spot
 ## Author: @icbat
-## Version: 15
+## Version: 16
 
 ## Dependencies
 libs/LibStub.lua

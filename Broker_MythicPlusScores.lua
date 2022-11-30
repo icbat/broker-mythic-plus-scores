@@ -65,16 +65,20 @@ local function build_run_table()
 end
 
 local function build_tooltip(self)
-    local total_score = C_ChallengeMode.GetOverallDungeonScore()
+    local affixes = C_MythicPlus.GetCurrentAffixes()
+    if affixes[1] == nil then
+        self:AddLine("No active season")
+        return
+    end
 
+    local total_score = C_ChallengeMode.GetOverallDungeonScore()
     self:AddHeader(total_score)
     self:SetCell(1, 1, total_score, "CENTER", 4)
-
     set_color(self, 1, 1, C_ChallengeMode.GetDungeonScoreRarityColor(total_score))
 
     -- TODO look up the global const for Tyranical and Fort so we can grab short strings
     self:AddLine("Dungeon", "T", "F", "Score")
-    local affixes = C_MythicPlus.GetCurrentAffixes()
+
     local first_affix = affixes[1]
     local id = first_affix["id"]
     local name = C_ChallengeMode.GetAffixInfo(id)
